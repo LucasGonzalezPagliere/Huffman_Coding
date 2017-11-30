@@ -4,9 +4,11 @@
  *	to quickly process read calls.  Runtime is approximately
  *	100 times faster than previous iteration built on java.io.
  *
+ *  @contributer Morton Mo
  *	@contributor Owen Astrachan
  *	@author Brian Lavallee
  *	@date 10 April 2016
+ *  @date Updated November 2017 with comments.
  */
 
 import java.io.BufferedInputStream;
@@ -45,7 +47,12 @@ public class BitInputStream extends InputStream {
 	public BitInputStream(String filePath) {
 		this(new File(filePath));
 	}
-	
+
+	/**
+	 * Construct a {@code BitInputStream} instance that reads from
+	 * a specified file.
+	 * @param fileSource the source file to read from
+	 */
 	public BitInputStream(File fileSource) {
 		try {
 			initialize(new FileInputStream(fileSource));
@@ -54,7 +61,12 @@ public class BitInputStream extends InputStream {
 			throw new RuntimeException(fnf);
 		}
 	}
-	
+
+	/**
+	 * Construct a {@code} BitInputStream instance that reads from
+	 * a specified {@code java.io.InputStream}.
+	 * @param in an instance of {@code java.io.InputStream} to read from
+	 */
 	public BitInputStream(InputStream in) {
 		initialize(in);
 	}
@@ -69,7 +81,13 @@ public class BitInputStream extends InputStream {
 		buffer = ByteBuffer.allocate(BUFFER_SIZE);
 		buffer.position(BUFFER_SIZE);
 	}
-	
+
+	/**
+	 * Return the number of bits read so far. This is a cumulative
+	 * counter of bits that do not reset even if the internal
+	 * buffer will be.
+	 * @return the number of bits read
+	 */
 	public int bitsRead() {
 		return bitsRead;
 	}
@@ -99,14 +117,23 @@ public class BitInputStream extends InputStream {
 			throw new RuntimeException(io);
 		}
 	}
-	
+
+	/**
+	 * Read {@code BYTE_SIZE} number of bits.
+	 * @return the integer value represented by bits read
+	 */
 	public int read() {
 		return readBits(BYTE_SIZE);
 	}
-	
+
+	/**
+	 * Read a specified number of bytes from the source.
+	 * @param numBits number of bits to read. Must be between 1 and 32 inclusive.
+	 * @return the integer value represented by the bits
+	 */
 	public int readBits(int numBits) {
 		if (numBits > INT_SIZE || numBits < 1) {
-			throw new RuntimeException("Illegal argument: numBits must be on [1, 32]");
+			throw new RuntimeException("Illegal argument: numBits must be in [1, 32]");
 		}
 		
 		bitsRead += numBits;
