@@ -129,7 +129,8 @@ public class BitInputStream extends InputStream {
 	/**
 	 * Read a specified number of bytes from the source.
 	 * @param numBits number of bits to read. Must be between 1 and 32 inclusive.
-	 * @return the integer value represented by the bits
+	 * @return the integer value represented by the bits, or -1 if no more bits are
+	 * 		   available
 	 */
 	public int readBits(int numBits) {
 		if (numBits > INT_SIZE || numBits < 1) {
