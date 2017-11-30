@@ -3,10 +3,12 @@
  *	package.  Uses multiple buffers to move optimized chunks
  *	at a time.  Allows for writing up to 32 bits at a time.
  *
+ *  @contributor Morton Mo
  *	@contributor Owen Astrachan
  *	@author Brian Lavallee
  *	@date 10 April 2016
  *  @date Updated November 2016 with comments and refactoring
+ *  @date Updated November 2017 with comments
  *  public/private
  */
 
@@ -133,7 +135,7 @@ public class BitOutputStream extends OutputStream {
 	 */
 	public void writeBits(int numBits, int value) {
 		if (numBits > INT_SIZE || numBits < 1) {
-			throw new RuntimeException("Illegal argument: numBits must be on [1, 32]");
+			throw new RuntimeException("Illegal argument: numBits must be in [1, 32]");
 		}
 		
 		bitsWritten += numBits;
