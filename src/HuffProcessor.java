@@ -48,13 +48,63 @@ public class HuffProcessor {
 	 *            Buffered bit stream writing to the output file.
 	 */
 	public void decompress(BitInputStream in, BitOutputStream out){
-	    while (true){
-            int val = in.readBits(BITS_PER_WORD);
-            if (val == -1) break;
-            
-            out.writeBits(BITS_PER_WORD, val);
-        }
+	   
+		int id = in.readBits(BITS_PER_INT);
+	    if(id!=HUFF_TREE) {
+	    		throw new HuffException("fuck you");
+	    }
+	    HuffNode root = readTreeHeader(in);
+	    readCompressedBits(root,in,out);
 	}
+
+
+		
+	
+	
+
+	
+	public HuffNode readTreeHeader(BitInputStream head) {
+		
+		int bit = head.readBits(1);
+		
+		if(bit==0) {
+			HuffNode left = readTreeHeader(head);
+			HuffNode right = readTreeHeader(head);
+			return new HuffNode(0,0,left,right);
+		}
+		else if(bit==PSEUDO_EOF) {
+			return new HuffNode(1,PSEUDO_EOF);
+		}
+		else {
+			return new HuffNode(1, head.readBits(BITS_PER_WORD+1));
+		}
+	}
+	
+	
+	
+	public void readCompressedBits(HuffNode root, BitInputStream in, BitOutputStream out) {
+		
+		HuffNode copy =root;
+		int lOrR = in.readBits(1);
+		
+		while(in.readBits(1)!=PSEUDO_EOF) {
+		
+		if(lOrR==0) {
+			copy = copy.left();
+		}
+		else if(lOrR==1) {
+			copy = copy.right();
+			}
+		else {
+			out.write(root.value());
+			copy  = root;
+		}
+		
+		}
+	}
+	
+	
+	
 	
 	public void setHeader(Header header) {
         myHeader = header;
